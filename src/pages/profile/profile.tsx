@@ -1,6 +1,9 @@
 import { ProfileUI } from '@ui-pages';
 import { FC, SyntheticEvent, useEffect, useState } from 'react';
-import { fetchUserOrders } from '../../services/slices/UserSlice';
+import {
+  fetchUserOrders,
+  modifyUserDetails
+} from '../../services/slices/UserSlice';
 import { useDispatch, useSelector } from '../../services/store';
 
 export const Profile: FC = () => {
@@ -9,7 +12,7 @@ export const Profile: FC = () => {
 
   useEffect(() => {
     dispatch(fetchUserOrders());
-  });
+  }, [dispatch]);
 
   if (user) {
     const [formValue, setFormValue] = useState({
@@ -33,6 +36,7 @@ export const Profile: FC = () => {
 
     const handleSubmit = (e: SyntheticEvent) => {
       e.preventDefault();
+      dispatch(modifyUserDetails(formValue));
     };
 
     const handleCancel = (e: SyntheticEvent) => {
@@ -61,4 +65,6 @@ export const Profile: FC = () => {
       />
     );
   }
+
+  return null;
 };

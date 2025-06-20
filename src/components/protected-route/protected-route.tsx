@@ -1,7 +1,7 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
-import { verifyUserSession } from '../../services/slices/UserSlice';
 import { useDispatch, useSelector } from '../../services/store';
+import { Preloader } from '../ui/preloader';
 
 type ProtectedRouteProps = {
   onlyUnAuth?: boolean;
@@ -17,13 +17,11 @@ export const ProtectedRoute = ({
 
   const { user, isAuthVerified } = useSelector((state) => state.auth);
 
-  useEffect(() => {
-    if (!isAuthVerified) {
-      dispatch(verifyUserSession());
-    }
-  });
-
   const from = location.state?.from || { pathname: '/' };
+
+  if (!isAuthVerified) {
+    return <Preloader />;
+  }
 
   if (onlyUnAuth && user) {
     return <Navigate to={from} replace />;

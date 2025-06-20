@@ -50,10 +50,9 @@ export const createUserAccount = createAsyncThunk(
 );
 
 export const logOutUser = createAsyncThunk('auth/signOutUser', async () => {
-  await logoutApi();
-  localStorage.clear();
-  deleteCookie('accessToken');
-  deleteCookie('refreshToken');
+  await logoutApi().then(() => {
+    localStorage.clear();
+  });
 });
 
 export const modifyUserDetails = createAsyncThunk(
