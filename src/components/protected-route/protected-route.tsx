@@ -1,27 +1,36 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
+import { verifyUserSession } from '../../services/slices/UserSlice';
+import { useDispatch, useSelector } from '../../services/store';
 
 type ProtectedRouteProps = {
   onlyUnAuth?: boolean;
   children: React.ReactNode;
 };
 
-const isAuth = () => Boolean(localStorage.getItem('token'));
-
 export const ProtectedRoute = ({
-  onlyUnAuth,
+  onlyUnAuth = false,
   children
 }: ProtectedRouteProps) => {
   const location = useLocation();
-  const auth = isAuth();
+  const dispatch = useDispatch();
 
-  if (onlyUnAuth && auth) {
-    const from = location.state?.from || { pathname: '/' };
+  const { user, isAuthVerified } = useSelector((state) => state.auth);
+
+  useEffect(() => {
+    if (!isAuthVerified) {
+      dispatch(verifyUserSession());
+    }
+  });
+
+  const from = location.state?.from || { pathname: '/' };
+
+  if (onlyUnAuth && user) {
     return <Navigate to={from} replace />;
   }
 
-  if (!onlyUnAuth && !auth) {
-    return <Navigate to='/login' state={{ from: location }} replace />;
+  if (!onlyUnAuth && !user) {
+    return <Navigate to='/login' state={{ from: location.pathname }} replace />;
   }
 
   return children;
