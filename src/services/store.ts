@@ -6,9 +6,17 @@ import {
   useSelector as selectorHook
 } from 'react-redux';
 import { ingredientReducer } from './slices/IngredientsSlice';
+import { constructorReducer } from './slices/ConstructorSlice';
+import { authReducer } from './slices/UserSlice';
+import { orderReducer } from './slices/OrderSlice';
+import { feedReducer } from './slices/FeedSlice';
 
 export const rootReducer = combineReducers({
-  ingredients: ingredientReducer
+  ingredients: ingredientReducer,
+  auth: authReducer,
+  burgerConstructor: constructorReducer,
+  order: orderReducer,
+  feed: feedReducer
 });
 
 const store = configureStore({
